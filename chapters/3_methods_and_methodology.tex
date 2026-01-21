@@ -1,0 +1,21 @@
+\chapter{Methods \& Methodologies}
+\label{ch:methods_and_methodologies}
+This project will adopt a multi-stage, mixed-methods approach that combines systematic literature review, theoretical analysis, and computational simulation. The method is designed to establish a firm understanding of the current research landscape and then deconstruct a (or several) key protocol(s) to analyze its theoretical properties and practical viability.
+
+The project will be managed through a structured and phased research plan with clearly defined milestones. This ensures it remains on track within the six-month period of the dissertation scope whilst leaving room for adaptability further down the timeline.
+
+Aligning tightly with the objectives set out in chapter \ref{ch:objectives}, we outline a few key phases:
+
+\begin{enumerate}
+	\item Foundational Literature Review
+	\item Analysis and Implementation of the Selected Protocol
+	\item Designing Modifications for the Selected Protocol
+\end{enumerate}
+
+The primary method of literature review will be a targeted search of academic databases, including arXiv \cite{arxiv}, Google Scholar \cite{google-scholar}, and the American Physical Society \cite{aps}. The review will predominantly focus on foundational papers containing keywords such as "interactive proofs", "verifiable quantum learning", "delegated quantum learning/computation" that establish a client-server model for quantum computation and more specifically, learning, before narrowing to more recent proposals that explicilty aim to minimize verifier resources or tolerate noise.
+
+Following the literature review, the project will move in the direction of rigorous theoretical and practical analysis.
+This will involve decomposing a protocol into fundamental components - the roles of the verifier and prover, the required quantum and classical resources for each party, the communication flow, and security guarantees (completeness and soundness defined in the definition of QPIP \cite{aharonov2017interactiveproofsquantumcomputations}).
+The practical analysis will predominantly involve the implementation of a previously unimplemented verification protocol, which we will build with a widely-supported quantum computing framework such as IBM's Qiskit \cite{qiskit2024}. We will execute the implementation in both ideal, noise-free environments as well as with standard noise models \cite{Georgopoulos_2021}. With this, we will be able to compute metrics including the protocol's completeness and soundness from a practical methodology.
+
+Based on the insights gathered from the previous phase, the final phase will focus on designing and evaluating targeted modifications to a selected protocol, transitioning from analysis to synthesis with a tangible improvement that enhances the protocol's robustness and resource-efficiency. The proposed modifications will be implemented within the existing Qiskit simulation framework to allow for a direct and controlled comparison, with a modification being considered successful if it demonstrates a statistically significant improvement in noise resilience compared to its initial implementation.

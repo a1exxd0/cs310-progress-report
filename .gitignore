@@ -1,0 +1,6 @@
+# Macos metadata
+.DS_Store
+
+# Output directory
+build/
+
