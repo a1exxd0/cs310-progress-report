@@ -2,5 +2,16 @@
 .DS_Store
 
 # Output directory
-build/
+build/*.*
 
+
+# LaTeX
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
