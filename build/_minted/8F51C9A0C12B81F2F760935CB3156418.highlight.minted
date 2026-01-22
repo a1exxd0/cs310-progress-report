@@ -1,0 +1,16 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{sample\PYGZus{}f}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{rng}\PYG{p}{:} \PYG{n}{Optional}\PYG{p}{[}\PYG{n}{Generator}\PYG{p}{]} \PYG{o}{=} \PYG{k+kc}{None}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{np}\PYG{o}{.}\PYG{n}{ndarray}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{l+s+sd}{    Sample a random Boolean function f \PYGZti{} F\PYGZus{}D.}
+
+\PYG{l+s+sd}{    For each x in \PYGZob{}0,1\PYGZcb{}\PYGZca{}n, independently sample f(x) \PYGZti{} Bernoulli(phi(x)).}
+
+\PYG{l+s+sd}{    Returns}
+\PYG{l+s+sd}{    \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{l+s+sd}{    f : np.ndarray of shape (2\PYGZca{}n,), dtype=np.uint8}
+\PYG{l+s+sd}{    f[x] is the value f(x) in \PYGZob{}0, 1\PYGZcb{}.}
+\PYG{l+s+sd}{    \PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{k}{if} \PYG{n}{rng} \PYG{o+ow}{is} \PYG{k+kc}{None}\PYG{p}{:}
+        \PYG{n}{rng} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{rng}
+    \PYG{k}{return} \PYG{p}{(}\PYG{n}{rng}\PYG{o}{.}\PYG{n}{random}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{dim\PYGZus{}x}\PYG{p}{)} \PYG{o}{\PYGZlt{}} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}phi}\PYG{p}{)}\PYG{o}{.}\PYG{n}{astype}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{uint8}\PYG{p}{)}
+\end{MintedVerbatim}

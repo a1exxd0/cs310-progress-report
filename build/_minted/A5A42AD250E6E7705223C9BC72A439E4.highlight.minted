@@ -1,0 +1,16 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{n}{ef}\PYG{+w}{ }\PYG{n}{statevector\PYGZus{}from\PYGZus{}f}\PYG{p}{(}\PYG{n}{self}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{f}\PYG{p}{:}\PYG{+w}{ }\PYG{n}{np}\PYG{p}{.}\PYG{n}{ndarray}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZhy{}}\PYG{p}{\PYGZgt{}}\PYG{+w}{ }\PYG{n}{Statevector}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s}{\PYGZdq{}\PYGZdq{}}\PYG{l+s}{\PYGZdq{}}
+\PYG{l+s}{    Construct the Qiskit Statevector |phi\PYGZus{}(U\PYGZus{}n, f)\PYGZgt{} for a fixed function f.}
+
+\PYG{l+s}{    |phi\PYGZus{}(U\PYGZus{}n, f)\PYGZgt{} = (1/sqrt(2\PYGZca{}n)) * sum\PYGZus{}x |x, f(x)\PYGZgt{}}
+\PYG{l+s}{    \PYGZdq{}}\PYG{l+s}{\PYGZdq{}\PYGZdq{}}
+\PYG{+w}{    }\PYG{n}{sv\PYGZus{}data}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n}{np}\PYG{p}{.}\PYG{n}{zeros}\PYG{p}{(}\PYG{n}{self}\PYG{p}{.}\PYG{n}{dim\PYGZus{}total}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{dtype}\PYG{p}{=}\PYG{n}{np}\PYG{p}{.}\PYG{n}{complex128}\PYG{p}{)}
+\PYG{+w}{    }\PYG{n}{amp}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{l+m+mf}{1.0}\PYG{+w}{ }\PYG{p}{/}\PYG{+w}{ }\PYG{n}{np}\PYG{p}{.}\PYG{n}{sqrt}\PYG{p}{(}\PYG{n}{self}\PYG{p}{.}\PYG{n}{dim\PYGZus{}x}\PYG{p}{)}
+
+\PYG{+w}{    }\PYG{k}{for}\PYG{+w}{ }\PYG{n}{x}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{n}{range}\PYG{p}{(}\PYG{n}{self}\PYG{p}{.}\PYG{n}{dim\PYGZus{}x}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{        }\PYG{n}{idx}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n}{x}\PYG{+w}{ }\PYG{p}{+}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{p}{(}\PYG{n}{f}\PYG{p}{[}\PYG{n}{x}\PYG{p}{]}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{*}\PYG{+w}{ }\PYG{n}{self}\PYG{p}{.}\PYG{n}{dim\PYGZus{}x}
+\PYG{+w}{        }\PYG{n}{sv\PYGZus{}data}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{]}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n}{amp}
+
+\PYG{+w}{    }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{Statevector}\PYG{p}{(}\PYG{n}{sv\PYGZus{}data}\PYG{p}{)}
+\end{MintedVerbatim}
