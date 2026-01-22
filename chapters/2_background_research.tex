@@ -1,5 +1,157 @@
-\chapter{Background Research and Literature}
+\chapter{Background Research and Literature} % 1.8k words
+A large section of work completed during this project was reading into the necessary materials within the field to find enough direction to follow through with the specification. The initial scope of the project required exploration into two key papers \cite{mahadev2023classicalverificationquantumcomputations} \cite{https://doi.org/10.4230/lipics.itcs.2024.24}. These ideas from Mahadev and Caro et al. will be foundation of what we are building on, hopefully finding a way to bring core themes from the two papers together.
+
+Additional reading was completed in order to grasp the field in more depth, but the following papers and concepts highlight the essentials of what we need to continue the project.
+
 \section{The hardness of the Learning with Errors problem}
+The Learning with Errors \cite{regev2024latticeslearningerrorsrandom} problem is a mathematical problem widely used create secure encryption algorithms, conjectured to be hard to solve and a generalization of the parity learning problem, and further learning parity with noise \cite{blum2000noisetolerantlearningparityproblem}.
+
+\subsection{Parity Learning \& Learning Parity with Noise}
+Parity learning is a canonical problem in computational learning theory, where the goal is to identify a parity function $f$ given some samples $(x, f(x))$, with the samples being generated using some distribution over the input. The noisy version incorporates that the samples may contain some error; instead of samples $(x, f(x))$, the algorithm is provided with $(x, y)$ where for some random boolean $b \in \{0, 1\}$:
+\[
+	y =
+	\begin{cases}
+		f(x)     & \text{if } b     \\
+		1 - f(x) & \text{otherwise}
+	\end{cases}
+\]
+
+\subsection{Defining Learning with Errors}
+\textbf{Learning with errors.} Let $\mathbb{Z}_q$ denote the ring of integers modulo $q$ and let $\mathbb{Z}_q^n$ denote the set of $n$-vectors over $\mathbb{Z}_q$. There exists an unknown linear function $f: \mathbb{Z}_q^n \to \mathbb{Z}_q$, and the input to the learning with errors problem is a sample of pairs $(x, y)$ where $x \in \mathbb{Z}_q^n$ and $y \in \mathbb{Z}_q$ such that with high probability $y = f(x)$ with deviation from equality according to some known noise model. We say that an algorithm for this is efficient if, given samples, it outputs $y = f(x)$ with probability exponentially close to 1, in polynomial time in $n$.
+
+\section{Trapdoor Claw-Free Functions in Quantum Cryptography}
+We can define a trapdoor claw-free function family as follows:
+
+\begin{definition}
+	Call $\mathcal{F} = \{f_{k, b}: \mathcal{X} \to \mathcal{Y}\}$ for $b \in \{0, 1\}$ a trapdoor claw-free function family. This function family is both two-to-one (both $f_{k, 0}(\cdot)$ and $f_{k,1}(\cdot)$ are injective and their images are equal) and is computationally difficult to find a \textit{claw}, a pair of points $x_0, x_1$ which have the same image ($f_{k,0}(x_0) = f_{k,1}(x_1)$). Given $y$ in the image of $f_{k, 0}$ or $f_{k, 1}$ the trapdoor $t_k$ of the functions $f_{k,0}$ and $f_{k, 1}$ allows the recovery of both preimages of $y$.
+
+	The function family also satisfies two hardcore bit properties, which are stronger versions of the claw-free property. Firstly, it is computationally difficult to hold both a preimage and a single bit of the other preimage (from $f_{k, 0}$ and $f_{k, 1}$), or equivalently it is computationally difficult to hold a preimage $x_b$, a nonzero string $d$ and the bit $d \cdot (x_0 \oplus x_1)$ where $x_0$ and $x_1$ form a claw. Secondly, there exists strings $d$ for which finding just $d \cdot (x_0 \oplus x_1)$ is computationally difficult.
+\end{definition}
+
+Mahadev's paper \cite{mahadev2023classicalverificationquantumcomputations} builds upon ideas from the canonical definition of the trapdoor claw-free (TCF) function family, providing a definition for a "noisy TCF function" from a family of functions $\mathcal{F} = \{f_{k, b}: \mathcal{X} \to \mathcal{D}_\mathcal{Y}\}$ with $k \in \mathcal{K}_\mathcal{F}, b \in \{0,1\}$, $\mathcal{X}, \mathcal{Y}$ as finite sets, $\mathcal{K}_\mathcal{F}$ as a finite set of keys, and $\mathcal{D}_\mathcal{Y}$ a distribution over elements in $\mathcal{Y}$.
+
 \section{Classical Verification of Quantum Computations}
-\section{Classical Verification of Quantum Machine Learning with Mixture of Superpositions}
-\section{Interactive Proofs for Verifying Quantum Learning}
+Using the concept of TCF functions alongside the hardness of finding claw-pairs, Mahadev \cite{mahadev2023classicalverificationquantumcomputations} outlines a sound and complete measurement and verification protocol between a single BPP-BQP machine pair. Essentially, Mahadev uses the BPP verifier to force the BQP prover to "commit" to a state with TCFs.
+
+\begin{definition} \textbf{State commitment. }
+	Given a TCF function family $\mathcal{F}$ and a function key $k$ corresponding to the functions $f_{k, 0}, f_{k, 1} \in \mathcal{F}$ assuming that computing the functions only requires access to the function key $k$ (such an efficient key/trapdoor generation algorithm for a noisy TCF function can be found here \cite{brakerski2021cryptographictestquantumnesscertifiable}).
+
+	The state commitment process is then performed with respect to an arbitrary single qubit state $\ket{\psi}$:
+	\begin{equation}
+		\ket{\psi} = \sum_{b \in \{0, 1\}} \alpha_b \ket{b} = \alpha_0 \ket{0} + \alpha_1 \ket{1}
+	\end{equation}
+
+	The commitment process consists of two steps. Firstly, the functions generated from key $k$ $f_{k, 0}, f_{k, 1}$ are applied in superposition, using $\ket{\psi}$ to determine which function to apply and a uniform superposition over $x \in \mathcal{X}$ as the input to $f_{k, 0}, f_{k, 1}$:
+	\begin{equation}
+		\frac{1}{\sqrt{|\mathcal{X}|}} \sum_{b \in \{0, 1\}} \sum_{x \in \mathcal{X}} \alpha_b \ket{b} \ket{x} \ket{f_{k, b}(x)}
+		\label{eq:commitmentA}
+	\end{equation}
+	In plainer English, this reads as the coherent superposition over $b \in \{0, 1\}$ and $x \in \mathcal{X}$ where the function value $f_{k, b}(x)$ is computed in superposition. At this point we measure the final register $f_{k, b}(x)$ obtaining $y \in \mathcal{Y}$. In practice, this means that all terms in the superposition without explicit output $y$ will disappear and remaining terms renormalised (we only keep states such that $f_{k, b}(x) = y$) and we are left with:
+	\begin{equation}
+		\sum_{b \in \{0, 1\}} \alpha_b \ket{b} \ket{x_{b, y}}
+		\label{eq:finalNormalised}
+	\end{equation}
+	Where $x_{0, y}, x_{1, y}$ are two preimages of $y$ (remember by definition of the TCF function family these are also the \textit{only} two preimages of $y$ from the claw-free nature of the functions $f_{k, 0}, f_{k, 1})$. However, with access to trapdoor $t_k$, both inverses can be computed from $y$, giving the BPP verifier some control over the BQP prover state.
+\end{definition}
+Mahadev's goal is to obtain the original Hadamard measurement of $\ket{\psi}$ from the above definition. We can obtain this by applying a Hadamard transformation to the committed qubit $b$ and the preimage register $x_{b, y}$ in $\ref{eq:finalNormalised}$ (let $X$ be the X Pauli operator), taken from her paper \cite{mahadev2023classicalverificationquantumcomputations}:
+\begin{equation}
+	\frac{1}{\sqrt{|\mathcal{X}|}}\sum_{d \in \mathcal{X}} X^{d \cdot (x_{0, y} \oplus x_{1, y})} H\ket{\psi} \otimes Z^{x_{0, y}}\ket{d}
+	\label{eq:hadamardTransformedFinalNormalised}
+\end{equation}
+
+Then, we measure the second preimage register obtaining $d \in \mathcal{X}$. The state now is:
+\begin{equation}
+	X^{d \cdot (x_{0, y} \oplus x_{1, y})} H\ket{\psi}
+	\label{eq:measuredPreimage}
+\end{equation}
+Our verifier wants the outcome from measuring $H\ket{\psi}$ in the standard basis, but the actual qubit is $\ref{eq:measuredPreimage}$. Now, we could physically correct first (let $s = d \cdot (x_{0, y} \oplus x_{1, y})$):
+\begin{equation}
+	X^s(X^sH\ket{\psi}) = X^{2s}H\ket{\psi} = H\ket{\psi}
+\end{equation}
+
+Suppose measuring $H\ket{\psi}$ gives you a classical bit $m \in \{0, 1\}$. If you instead measure $X^sH\ket{\psi}$ the measurement result is flipped when $s = 1$ from the Pauli X transformation. Call the raw, measured bit $b'$. Then:
+
+\begin{equation}
+	b' = m \oplus s
+\end{equation}
+
+So the verifier recovers as required, with knowledge of the trapdoor $t_k$ to obtain $x_{0, y}, x_{1, y}$ and the recieved string $d$ from the prover:
+\begin{equation}
+	m = b' \oplus (d \cdot (x_{0, y} \oplus x_{1, y}))
+\end{equation}
+
+In short, Mahadev's measurement protocol employs the above technique with a slightly adjusted version of the TCF function family definition to probabilistically ensure (to the point of completeness and soundness) that the prover does not cheat in computation and is committed to actually performing the measurement of the qubit $\ket{\psi}$. This extended protocol is something that I explore throughout my project.
+
+\section{Classical Verification of Quantum Learning}
+We begin by formalising the case of the agnostic learning task \cite{HAUSSLER199278} \cite{towardsefficientagnosticlearning}. There are two canonical choices documented:
+\begin{itemize}
+	\item In \textit{functional agnostic learning} with respect to uniformly random inputs, we assume the data consists of labeled inputs $(x_i, f(x_i))$ with the $x_i$ drawn i.i.d. uniformly at random from $\mathcal{X}_n \equiv \{0, 1\}^n$ and $f: \{0, 1\}^n \to \{0, 1\}$, an unknown boolean function. We denote the data-generating distribution as $\mathcal{D} = (\mathcal{U}_n, f)$.
+	\item In the \textit{distributional agnostic learning} task with respect to uniformly random inputs, we no longer assume a perfectly descriptive $f$. In other words, we assume samples labelled $(x_i, y_i)$ drawn i.i.d. over some distribution $\mathcal{D}$ over $\{0, 1\}^n \times \{0, 1\}$ with uniform marginal over $\{0, 1\}^n$. We denote this as $\mathcal{D} = (\mathcal{U}_n, \varphi)$ where $\varphi: \{0, 1\}^n \to \{0, 1\}$ is the conditional label function defined by:
+	      \[\varphi(x) = \mathbb{P}_{(x, y) \sim \mathcal{D}}[y=1 | x]\]
+\end{itemize}
+The goal in both types of learning is to learn an almost-optimal approximating function compared to a benchmark class $\mathcal{B}$, such that given accuracy parameter $\varepsilon$, confidence parameter $\delta$, and access to training data i.i.d. from $\mathcal{D}$, an $\alpha$-agnostic learner has to output, with success probability $\geq 1 - \delta$ a hypothesis $h$ such that:
+\begin{equation}
+	\mathbb{P}_{(x, y) \sim \mathcal{D}}[h(x) \neq y] \leq \alpha \cdot \inf_{b \in \mathcal{B}} \mathbb{P}_{(x, y) \sim \mathcal{D}} [b(x) \neq y] + \varepsilon
+	\label{eq:hypothesisLearning}
+\end{equation}
+In simpler words, that the hypothesis function outputs "incorrect answers" at most as likely as the best benchmark (by metric of most likely to be accurate) for any input $x$, multiplied by $\alpha$ with some additive error margin $\varepsilon$.
+
+In quantum learning theory, a learner can have access to the distribution $\mathcal{D}$ via a potentially more powerful resource than classical i.i.d. examples, with quantum training data canonically taken to consist of copies of the \textit{quantum superposition example state} \cite{10.1145/225298.225312}:
+\begin{equation}
+	\ket{\phi_\mathcal{D}} = \sum_{(x, y) \in \{0, 1\}^n \times \{0, 1\}} \sqrt{\mathcal{D}(x, y)}\ket{x, y}
+	\label{eq:quantumSuperpositionExampleState}
+\end{equation}
+Whilst the above data is at least as powerful as its classical counterpart (since we can simulate classical data via computational basis measurements), it is unknown how to use copies of $\ket{\phi_\mathcal{D}}$ to improve upon classical distributional agnostic learning. Caro presents a new idea of "mixture of superpositions" \cite{https://doi.org/10.4230/lipics.itcs.2024.24} to attempt to overcome this:
+
+\subsection{Mixture of Superpositions}
+\begin{definition} \textbf{Mixture-of-superpositions quantum examples for distributional agnostic learning. }
+	Let $\mathcal{D}$ be a probability distribution over $\mathcal{X}_n \times \{0, 1\}$. Let $F_\mathcal{D}$ be the probability distribution over $\{0, 1\}^{\mathcal{X}_n}$ defined by sampling $f(x)$ from the conditional label distribution independently for each $x \in \mathcal{X}_n$. That is, for any $\tilde{f}: \mathcal{X} \to \{0, 1\}$:
+	\begin{equation}
+		\begin{split}
+			\mathbb{P}_{f \sim F_\mathcal{D}}[f = \tilde{f}] & = \prod_{z \in \mathcal{X}_n} \mathbb{P}_{(x, y) \sim \mathcal{D}} [\tilde{f}(z) = y | x = z]         \\
+			                                                 & = \prod_{z \in \mathcal{X}_n}\left((1 - \varphi(z))(1 - \tilde{f}(z)) + \varphi(z)\tilde{f}(z)\right)
+		\end{split}
+		\label{eq:mos}
+	\end{equation}
+	In simpler words, we say that the probability that the random function $f$ equals a specific $\tilde{f}$ is the product over all inputs $z$ of the probability that the label at $z$ equals $\tilde{f}(z)$, with the factorization holding because labels at different points are sampled independently.
+	Then, a \textit{mixture-of-superpositions quantum example} for $\mathcal{D}$ is a copy of the $(n + 1)$-qubit state:
+	\begin{equation}
+		\rho_\mathcal{D} = \mathbb{E}_{f \sim F_\mathcal{D}}\left[\ket{\phi_{(\mathcal{D}_{\mathcal{X}_n}, f)}}\bra{\phi_{(\mathcal{D}_{\mathcal{X}_n}, f)}}\right]
+		\label{eq:mosexample}
+	\end{equation}
+\end{definition}
+
+We can see this follows from the fact that if there was a fixed deterministic target function $f: \mathcal{X}_n \to \{0, 1\}$, then a quantum example consistent with marginal $\mathcal{D}_{\mathcal{X}_n}$ is the pure state:
+\begin{equation}
+	\ket{\phi_{(\mathcal{D}_{\mathcal{X}_n}, f)}} = \sum_{x \in \mathcal{X}_n}\sqrt{\mathcal{D}_{\mathcal{X}_n}(x)}\ket{x} \ket{f(x)}
+	\label{eq:pureStateMarginal}
+\end{equation}
+
+However under a general distribution $\mathcal{D} = \mathcal{X}_n \times \{0, 1\}$, there is no fixed target function and labels $\varphi(x) = y$ are random according to $\mathbb{P}[y = 1 | x]$, and therefore there is no single pure state of the above form $\ref{eq:pureStateMarginal}$ that correctly represents the data-generating process. The distribution $F_\mathcal{D}$ allows us to overcome this as we sample a deterministic $\tilde{f} \sim F_\mathcal{D}$. Conditioned on $f = \tilde{f}$, labels are perfectly consistent and the quantum example is again pure ($\ket{\phi_{(\mathcal{D}_{\mathcal{X}_n}, \tilde{f})}}$). This defines the classical-quantum ensemble:
+\begin{equation}
+	\{\mathbb{P}[f = \tilde{f}], \ket{\phi_{(\mathcal{D}_{\mathcal{X}_n}, \tilde{f})}}\}_{\tilde{f}}
+	\label{eq:classicalQuantumEnsemble}
+\end{equation}
+
+Since the learner does not observe $f$ as a classically random variable, the unobserved classical randomness becomes mixing and creates a classical-quantum state on the joint space:
+\begin{equation}
+	\rho^{cq} = \sum_f p_f \ket{f}\bra{f} \otimes \ket{\phi_{(\mathcal{D}_{\mathcal{X}_n}, f)}} \bra{\phi_{(\mathcal{D}_{\mathcal{X}_n}, f)}}
+\end{equation}
+Where $\ket{f}\bra{f}$ is a projector encoding the classical event that the sampled function is $f$, and $\ket{\phi_{(\mathcal{D}_{\mathcal{X}_n}, f)}} \bra{\phi_{(\mathcal{D}_{\mathcal{X}_n}, f)}}$ is the density operator corresponding to the quantum example conditioned on $f$.
+
+As part of work to further understand, extend, and link this with Mahadev's work, I attempt to produce a version of this technique using Qiskit \cite{qiskit2024}.
+\subsection{Approximate Quantum Fourier Sampling}
+One of the biggest results in the Caro et al. paper \cite{https://doi.org/10.4230/lipics.itcs.2024.24} is how they use the mixture-of-superpositions (MoS) technique to enable approximate quantum fourier sampling in the \textit{distributional-agnostic} setting under uniform input marginal.
+
+\begin{theorem}
+	Let $\mathcal{D}$ be a probability distribution over $\mathcal{X}_n \times \{0, 1\}$ with $\mathcal{D}_{\mathcal{X}_n} = \mathcal{U}_n$. Let $\rho_\mathcal{D} = \mathbb{E}_{f \sim F_\mathcal{D}}[\ket{\varphi_{(\mathcal{U}_n, f)}}\bra{\varphi_{(\mathcal{U}_n, f)}}]$ be our MoS quantum examples. Given a copy of $\rho_\mathcal{D}$, first apply the unitary channel for the unitary $H^{\otimes(n + 1)}$, then measure all $n + 1$ qubits in the computational basis. The measurement outcomes of this procedure satisfy the following:
+	\begin{enumerate}
+		\item The computational basis on the last qubit gives outcomes $\{0, 1\}$ with equal probability.
+		\item Conditioned on having observed outcome 1 for the last qubit, the computational basis measurement on the first $n$ qubits outputs a string $s \in \{0, 1\}^n$ with probability:
+		      \[
+			      \frac{1}{2^n}\left(1 - \mathbb{E}_{x \sim \mathcal{U}_n}[(\phi(x))^2]\right) + (\hat{\phi}(s))^2
+		      \]
+	\end{enumerate}
+\end{theorem}
+
+Caro et al. states that, with probability $\frac{1}{2}$, produce a sample from a distribution is uniformly close to the squared Fourier spectrum of the label-bias function $\varphi$.
